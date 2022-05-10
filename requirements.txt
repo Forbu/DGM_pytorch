@@ -1,0 +1,8 @@
+pykeops
+pytorch
+torchvision
+torchaudio
+pytorch_lightning
+torch-geometric
+torch-scatter==2.0.8
+torch-sparse==0.6.12
