@@ -62,9 +62,6 @@ class DGM_Model(nn.Module):
             # generate the nb_layer graph with the graph generation module using only the spatial input
             index_edge, logprobs = self.graph_generation(x_spatial)
 
-            print(index_edge.shape)
-            print(logprobs.shape)
-
             # preprocess the node input with the node preprocessing module
             for i in range(self.nb_layer):
                 x = self.node_preprocessing[i](x, index_edge.squeeze(0).T)
