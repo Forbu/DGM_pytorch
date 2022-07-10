@@ -38,7 +38,7 @@ class DGM_Model(nn.Module):
         # create nb_layer of GATv2Conv layers inside the node_preprocessing module
         for i in range(nb_layer):
             #self.node_preprocessing.append(GATv2Conv(input_dim, hidden_dim, heads=1, concat=True))
-            self.node_preprocessing.append(GCNConv(input_dim, hidden_dim, improved=True, cached=True, add_self_loops=False))
+            self.node_preprocessing.append(GCNConv(hidden_dim, hidden_dim, improved=True, cached=True, add_self_loops=False))
         
         # create the first and the last layer of the graph neural network model with simple linear model
         self.first_layer = nn.Linear(input_dim, hidden_dim)
@@ -70,9 +70,6 @@ class DGM_Model(nn.Module):
 
             # preprocess the node input with the node preprocessing module
             for i in range(self.nb_layer):
-                print("preprocessing layer {}".format(i))
-                print("x.shape = {}".format(x.shape))
-                print("index_edge[{}].shape = {}".format(i, index_edge[i].shape))
                 x = self.node_preprocessing[i](x, index_edge[i].T)
 
             # pass the output of the first layer to the last layer
