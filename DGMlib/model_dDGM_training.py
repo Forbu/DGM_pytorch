@@ -48,7 +48,7 @@ class DGM_Model_Training(pl.LightningModule):
         # graph loss to enable the graph regularization
         for i in range(self.nb_layer):
             error_node = torch.sum((pred - target)**2, dim=-1)
-            loss_graph = -torch.sum(logprobs[i], dim=-1) * error_node
+            loss_graph = -torch.sum(logprobs, dim=-1) * error_node
 
             loss_graph = torch.sum(loss_graph)
 

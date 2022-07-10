@@ -29,8 +29,7 @@ class DGM_Model(nn.Module):
         self.graph_generation = ModuleList()
 
         # we use the DGM_d class to create the graph generation layer
-        for i in range(nb_layer):
-            self.graph_generation.append(DGM_d(hidden_dim, k=k, sparse=True))
+        self.graph_generation = DGM_d(hidden_dim, k=k, sparse=True)
 
         # init the graph neural network model
         self.node_preprocessing = nn.ModuleList()
@@ -61,16 +60,14 @@ class DGM_Model(nn.Module):
             x_spatial = self.spatial_preprocessing(x_spatial)
 
             # generate the nb_layer graph with the graph generation module using only the spatial input
-            index_edge = []
-            logprobs = []
-            for i in range(self.nb_layer):
-                index_edge_tmp, logprobs_tmp = self.graph_generation[i](x_spatial)
-                index_edge.append(index_edge_tmp.squeeze(0))
-                logprobs.append(logprobs_tmp)
+            index_edge, logprobs = self.graph_generation(x_spatial)
+
+            print(index_edge.shape)
+            print(logprobs.shape)
 
             # preprocess the node input with the node preprocessing module
             for i in range(self.nb_layer):
-                x = self.node_preprocessing[i](x, index_edge[i].T)
+                x = self.node_preprocessing[i](x, index_edge.squeeze(0).T)
 
             # pass the output of the first layer to the last layer
             x = self.last_layer(x)
@@ -82,7 +79,7 @@ class DGM_Model(nn.Module):
 
             # preprocess the node input with the node preprocessing module
             for i in range(self.nb_layer):
-                x = self.node_preprocessing[i](x, index_edge[i])
+                x = self.node_preprocessing[i](x, index_edge)
 
             # pass the output of the first layer to the last layer
             x = self.last_layer(x)
